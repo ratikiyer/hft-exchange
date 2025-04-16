@@ -10,9 +10,7 @@
 #include <optional>
 #include <atomic>
 
-// CHANGED: Always include logger, no more #ifdef
 #include "../includes/logger.h"
-
 #include "../includes/plf_hive.h"
 #include "../includes/robin_hood.h"
 
@@ -48,7 +46,6 @@ private:
 
    robin_hood::unordered_map< order_id_key, order_location, order_id_hasher > order_id_lookup_;
 
-   // CHANGED: Always have a logger pointer
    logger* log_ = nullptr;
 
 public:
