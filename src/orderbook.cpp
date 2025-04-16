@@ -49,11 +49,12 @@ order_result orderbook::add(const order_t& order) {
    if (order_id_lookup_.contains(key)) {
       return order_result::DUPLICATE_ID;
    }
-
-   order_side side = static_cast<order_side>(order.side);
-   if (side != order_side::BUY && side != order_side::SELL) {
+   
+   if (order.side != static_cast<uint8_t>(order_side::BUY) && order.side != static_cast<uint8_t>(order_side::SELL)) {
       return order_result::INVALID_SIDE;
    }
+
+   order_side side = static_cast<order_side>(order.side);
 
    if (order.price > MAX_PRICE) {
       return order_result::INVALID_PRICE;

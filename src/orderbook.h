@@ -16,7 +16,7 @@
 #include "../includes/plf_hive.h"
 #include "../includes/robin_hood.h"
 
-static constexpr uint32_t MAX_PRICE = 2'000;
+static constexpr uint32_t MAX_PRICE = 20000;
 
 enum class order_result : uint8_t {
    SUCCESS=0,
@@ -55,9 +55,7 @@ public:
    // not default constructable
    orderbook() = delete;
 
-   // CHANGED: Always take logger pointer, no #ifdef
-   explicit orderbook(logger* log_instance = nullptr)
-   {
+   explicit orderbook(logger* log_instance = nullptr) {
       log_ = log_instance;
    }
 
@@ -89,7 +87,6 @@ private:
    void update_best_bid_on_cancel(uint32_t price);
    void update_best_ask_on_cancel(uint32_t price);
 
-   // CHANGED: log_event is always available
    void log_event(const log_event_t& event);
 };
 

@@ -49,8 +49,8 @@ struct order_id_hasher {
    }
 };
 
-//BEGIN_PACKED
-struct order_t {
+BEGIN_PACKED
+PACKED_STRUCT order_t {
    char order_id[ ORDER_ID_LEN ]; // 16 bytes
    uint64_t timestamp;
    size_t qty;
@@ -58,11 +58,11 @@ struct order_t {
    char ticker [ TICKER_LEN ]; // 4 bytes
    uint32_t price;
    
-   uint8_t kind : 1; // 1 bit
-   uint8_t side : 1;
-   uint8_t status : 2; 
+   uint8_t kind;
+   uint8_t side;
+   uint8_t status;
 
-   bool post_only : 1; // 1 bit
+   bool post_only;
 
    order_t() = default;
 
@@ -89,7 +89,7 @@ struct order_t {
       std::memcpy(ticker, _ticker, TICKER_LEN);
    }
 };
-//END_PACKED
+END_PACKED
 
 struct orderbook_config_t {
    bool enable_logging;

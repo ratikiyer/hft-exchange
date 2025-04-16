@@ -8,7 +8,6 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# REMOVED: No mention of ENABLE_LOGGING option or add_definitions.
 
 add_library(orderbook_lib
     src/orderbook.cpp
