@@ -52,21 +52,17 @@ struct log_event_t {
 
 class logger {
 public:
-   // Use text mode here for human‐readable logs. If you really want binary, use:
-   // out_file_(filename, std::ios::binary | std::ios::out)
    explicit logger(const std::string& filename)
-      : out_file_(filename),   // text mode for debugging
+      : out_file_(filename),
         running_(true)
    {
       if (!out_file_.is_open()) {
          throw std::runtime_error("Failed to open log file: " + filename);
       }
-      // Launch background thread
       thread_ = std::thread(&logger::run, this);
    }
 
    void push(const log_event_t& event) {
-      // Enqueue the event and notify the background thread
       queue_.enqueue(event);
 
       {
@@ -80,9 +76,7 @@ public:
          std::lock_guard<std::mutex> lock(mutex_);
          running_ = false;
       }
-      // Wake up the background thread so it can exit
       cv_.notify_one();
-      // Join thread before closing file
       if (thread_.joinable()) {
          thread_.join();
       }
@@ -96,17 +90,13 @@ private:
    std::atomic<bool> running_;
    std::thread thread_;
 
-   // For condition variable
    std::mutex mutex_;
    std::condition_variable cv_;
 
    void run() {
       while (true) {
-         // 1) Drain the queue of all log events currently pending
          log_event_t ev;
          while (queue_.try_dequeue(ev)) {
-            // For debugging, we write each field as text
-            // If you want binary, see the old code with out_file_.write(...)
             out_file_ << "TIMESTAMP=" << ev.timestamp
                       << " KIND=" << static_cast<int>(ev.kind)
                       << " PRICE=" << ev.price
@@ -121,16 +111,13 @@ private:
          }
          out_file_.flush();
 
-         // 2) Check if we're done; otherwise wait for new events
          std::unique_lock<std::mutex> lock(mutex_);
          if (!running_) {
             break;
          }
-         // Wait up to 500ms or until push() calls notify_one()
          cv_.wait_for(lock, std::chrono::milliseconds(500));
       }
 
-      // 3) Drain any final events after we've been told to shut down
       log_event_t ev;
       while (queue_.try_dequeue(ev)) {
          out_file_ << "TIMESTAMP=" << ev.timestamp
