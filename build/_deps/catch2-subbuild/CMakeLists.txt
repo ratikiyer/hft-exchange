@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file Copyright.txt or https://cmake.org/licensing for details.
 
-cmake_minimum_required(VERSION 3.28.1)
+cmake_minimum_required(VERSION 3.31.4)
 
 # Reject any attempt to use a toolchain file. We must not use one because
 # we could be downloading it here. If the CMAKE_TOOLCHAIN_FILE environment
@@ -28,8 +28,8 @@ set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
 include(ExternalProject)
 ExternalProject_Add(catch2-populate
                      "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/catchorg/Catch2.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "v3.3.2"
-                    SOURCE_DIR          "/Users/ratikiyer/Programming/quant/hft-exchange/build/_deps/catch2-src"
-                    BINARY_DIR          "/Users/ratikiyer/Programming/quant/hft-exchange/build/_deps/catch2-build"
+                    SOURCE_DIR          "/Users/siddcheetancheri/Code/hft/hft-exchange/build/_deps/catch2-src"
+                    BINARY_DIR          "/Users/siddcheetancheri/Code/hft/hft-exchange/build/_deps/catch2-build"
                     CONFIGURE_COMMAND   ""
                     BUILD_COMMAND       ""
                     INSTALL_COMMAND     ""

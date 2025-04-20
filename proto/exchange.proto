@@ -1,0 +1,29 @@
+syntax = "proto3";
+package hft;
+
+enum Side   { BUY = 0; SELL = 1; }
+enum OrdType{ LIMIT = 0; IOC = 1; MARKET = 2; }
+
+message NewOrderSingle {
+  bytes   order_id  = 1;   // 16‑byte fixed
+  string  symbol    = 2;   // e.g. "AAPL"
+  Side    side      = 3;
+  OrdType ord_type  = 4;
+  uint32  price     = 5;   // in integer ticks
+  uint32  qty       = 6;
+  uint64  ts        = 7;   // client time, ns
+}
+
+message CancelOrder   { bytes order_id = 1; }
+message ExecutionReport {
+  bytes   order_id   = 1;
+  uint32  fill_qty   = 2;
+  uint32  fill_px    = 3;
+  uint32  leaves_qty = 4;
+  bool    reject     = 5;
+  string  text       = 6;
+}
+
+service MatchingGateway {
+  rpc Submit(stream NewOrderSingle) returns (stream ExecutionReport);
+}

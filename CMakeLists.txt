@@ -13,6 +13,32 @@ add_library(orderbook_lib
     src/orderbook.cpp
 )
 
+# ----------  protobuf / gRPC ----------
+find_package(Protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
+
+set(PROTO_SRC proto/exchange.proto)
+protobuf_generate_cpp(PROTO_CPP  PROTO_HDR  ${PROTO_SRC})
+grpc_generate_cpp(GRPC_CPP GRPC_HDR ${PROTO_SRC})
+
+add_library(proto_objs ${PROTO_CPP} ${PROTO_HDR} ${GRPC_CPP} ${GRPC_HDR})
+target_link_libraries(proto_objs PUBLIC protobuf::libprotobuf gRPC::grpc++)
+
+# ----------  matching engine lib ----------
+add_library(engine_lib
+    src/exchange/engine.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROTO_CPP}
+    ${CMAKE_CURRENT_BINARY_DIR}/${GRPC_CPP})
+target_include_directories(engine_lib PUBLIC includes ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(engine_lib PUBLIC orderbook_lib proto_objs concurrentqueue)
+
+# ----------  executables ----------
+add_executable(ome src/exchange/ome_main.cpp)
+target_link_libraries(ome PRIVATE engine_lib)
+
+add_executable(gateway src/exchange/gateway_main.cpp)
+target_link_libraries(gateway PRIVATE proto_objs grpc++)
+
 target_include_directories(orderbook_lib
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/includes
